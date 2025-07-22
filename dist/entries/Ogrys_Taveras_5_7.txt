@@ -1,0 +1,10 @@
+=== STUDENT INFORMATION ===
+First Name: Ogrys
+Last Name:  Taveras
+=== ACADEMIC DATA ===
+Phase:      5
+Grade:      7
+=== NOTES ===
+None
+=== PROGRESS ===
+None

@@ -1,0 +1,15 @@
+=== STUDENT INFORMATION ===
+First Name: Danesa
+Last Name:  Alcantara
+Parent's Name:  Delbania
+Parent's Number:  +1 809-743-2990
+Parent's Mail:  n/a
+=== ACADEMIC DATA ===
+Phase:      7
+Grade:      12
+=== NOTES ===
+None
+=== PROGRESS ===
+None
+=== COMMENTS ===
+None
