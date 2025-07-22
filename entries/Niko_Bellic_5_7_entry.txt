@@ -1,0 +1,15 @@
+=== STUDENT INFORMATION ===
+First Name: Niko
+Last Name:  Bellic
+Parent's Name:  Mom's
+Parent's Number:  951753456
+Parent's Mail:  Aztriozka@papers.com
+=== ACADEMIC DATA ===
+Phase:      5
+Grade:      7
+=== NOTES ===
+None
+=== PROGRESS ===
+None
+=== COMMENTS ===
+None

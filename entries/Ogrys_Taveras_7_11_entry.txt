@@ -1,0 +1,15 @@
+=== STUDENT INFORMATION ===
+First Name: Ogrys
+Last Name:  Taveras
+Parent's Name:  Ogrys_Dad
+Parent's Number:  123456789
+Parent's Mail:  Dad@fake.com
+=== ACADEMIC DATA ===
+Phase:      7
+Grade:      11
+=== NOTES ===
+None
+=== PROGRESS ===
+None
+=== COMMENTS ===
+None

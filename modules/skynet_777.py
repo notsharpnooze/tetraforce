@@ -1,6 +1,7 @@
 import csv
 import os
-
+import subprocess
+#Keep it clean
 def clear_console():
     os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -17,83 +18,205 @@ def show_banner():
                            ----- ...We watch over you... -----                                                                             
 """)
 
+
+    
+
+def data_entry():
+   
+    def write_csv_header_if_needed(writer, file_exists):
+        header = ["Name", "Last Name", "Phase", "Grade", "Parent Name", "Parent Number", "Parent Mail"]
+
+        if not file_exists or os.path.getsize("data/data.csv") == 0:
+            writer.writerow(header)
+    clear_console()
+
+    name = input("Enter student name: ").strip()
+    last_name = input("Enter student last name: ").strip()
+
+    # Phases options
+    valid_phases = {"5", "6", "7"}
+    while True:
+        phase = input("Enter student's phase (5, 6, 7): ").strip()
+        if phase in valid_phases:
+            break
+        print("Enter: 5, 6 or 7.")
+
+    # Per Phase
+    valid_phases_grades = {
+        "5": {"7", "8"},
+        "6": {"9", "10"},
+        "7": {"11", "12"}
+    }
+    valid_grades = valid_phases_grades[phase]
+    print(f"Add a grade: {', '.join(valid_grades)}")
+
+    while True:
+        grade = input("Enter student's grade: ").strip()
+        if grade in valid_grades:
+            break
+        print(f"Pick a grade: {', '.join(valid_grades)}")
+
+    parent_name = input("Parent's name: ").strip()
+    parent_number = input("Parent's number: ").strip()
+    parent_mail = input("Parent's mail: ").strip()
+
+    # Writes on CSV file
+    os.makedirs("data", exist_ok=True)
+    file_exists = os.path.exists("data/data.csv")
+    with open("data/data.csv", "a", newline="") as file:
+        writer = csv.writer(file)
+        # Write header only if file is empty
+        write_csv_header_if_needed(writer, file_exists)
+        writer.writerow([name, last_name, phase, grade, parent_name, parent_number, parent_mail])
+    print(f"Entry for {name} {last_name} saved.")
+
+    # Creates a BIO
+    os.makedirs("entries", exist_ok=True)
+    filename = f"{name}_{last_name}_{phase}_{grade}_entry.txt"
+    filepath = os.path.join("entries", filename)
+
+    # Sets the TXT template
+    with open(filepath, "w") as f:
+        f.write("=== STUDENT INFORMATION ===\n")
+        f.write(f"First Name: {name}\n")
+        f.write(f"Last Name:  {last_name}\n")
+        f.write(f"Parent's Name:  {parent_name}\n")
+        f.write(f"Parent's Number:  {parent_number}\n")
+        f.write(f"Parent's Mail:  {parent_mail}\n")
+        f.write("=== ACADEMIC DATA ===\n")
+        f.write(f"Phase:      {phase}\n")
+        f.write(f"Grade:      {grade}\n")
+        f.write("=== NOTES ===\nNone\n")
+        f.write("=== PROGRESS ===\nNone\n")
+        f.write("=== COMMENTS ===\nNone\n")
+
+    print(f"\nEntry saved and file created at: entries/{filename}\n")
+
+#END OF THE ENTRY LOOP
+def end_of_data_entry():
+    while True:
+        data_entry()
+        response = input("Do you have more entries? (y/n): ").strip().lower()
+        while response not in {"y", "n"}:
+            print("Answer with (y) or (n), (y) means yes, (n) means no")
+            response = input("Do you have more entries? (y/n): ").strip().lower()
+        if response == "n":
+            print("Returning to main menu...")
+            break
+
 #SEARCH ENGINE ----- CHECK SLOWLY
+
+def filter_data(data, option, query):
+    if option == "1":
+        return [row for row in data if query in row[0].lower()]
+    elif option == "2":
+        return [row for row in data if query in row[1].lower()]
+    elif option == "3":
+        return [row for row in data if row[2] == query]
+    else:
+        return []
+
+def view_all_entries():
+    if not os.path.exists("data/data.csv"):
+        print("\n No data found. Add some... \n")
+        return
+
+    with open("data/data.csv", "r") as file:
+        rows = list(csv.reader(file))
+
+    if len(rows) <= 1:
+        print("\n The file is empty or has only headers. \n")
+        return
+
+    header = rows[0]
+    data = rows[1:]
+
+    while True:
+        clear_console()
+        print("\nSTUDENT ENTRIES:\n")
+        # Print only first 4 columns for display
+        print(f"{header[0]:<15} {header[1]:<15} {header[2]:<8} {header[3]:<8}")
+        print("-" * 50)
+        for row in data:
+            print(f"{row[0]:<15} {row[1]:<15} {row[2]:<8} {row[3]:<8}")
+        print()
+
+        choice = input("Press 'x' to sort, or 'b' to go back to the main menu: ").strip().lower()
+        if choice == "b":
+            break
+        elif choice == "x":
+            data = sort_entries(data)
+        else:
+            print("Invalid option.")
+
+def sort_entries(data):
+    sort_options = {
+        "1": ("Name (A-Z)", lambda x: x[0].lower()),
+        "2": ("Last Name (A-Z)", lambda x: x[1].lower()),
+        "3": ("Phase (ascending)", lambda x: int(x[2])),
+        "4": ("Grade (ascending)", lambda x: int(x[3])),
+        "5": ("No Sorting", None)
+    }
+
+    while True:
+        clear_console()
+        print("\nHow would you like to sort the results?")
+        for key, (desc, _) in sort_options.items():
+            print(f"{key}. {desc}")
+
+        option = input("Choose an option (1-5): ").strip()
+        if option in sort_options:
+            sort_key = sort_options[option][1]
+            if sort_key:
+                data = sorted(data, key=sort_key)
+            break
+        else:
+            print("Invalid option. Please choose again.")
+
+    return data
+
 def search_entries():
     try:
         with open("data/data.csv", "r") as file:
             rows = list(csv.reader(file))
 
-        if len(rows) <= 1: #if its empty
-            print("\n No student data available.\n")
+        if len(rows) <= 1:
+            print("\nNo student data available.\n")
             return
-        
-        header = rows[0] #Top of file
-        data = rows[1:]  #From 1 and on...
+
+        header = rows[0]
+        data = rows[1:]
 
         clear_console()
-        print("\n Search by:")
+        print("\nSearch by:")
         print("1. Name")
         print("2. Last Name")
         print("3. Phase")
 
-        option = input("Choose an option (1-3): ")
-        query = input("Enter your search term: ").strip().lower()
-
-        if option == "1":
-            results = [row for row in data if query in row[0].lower()]
-        elif option == "2":
-            results = [row for row in data if query in row[1].lower()]
-        elif option == "3":
-            results = [row for row in data if row[2] == query]
-        else:
+        option = input("Choose an option (1-3): ").strip()
+        if option not in {"1", "2", "3"}:
             print("Invalid option.")
             return
 
-        if results:
-            results = sort_entries(results) #Defined in #SORTING
+        query = input("Enter your search term: ").strip().lower()
+        results = filter_data(data, option, query)
 
+        if not results:
+            print("\nNo matches found.")
+        else:
+            results = sort_entries(results)
             clear_console()
-            print(f"\nFound {len(results)} result(s):\n") #number of results
+            print(f"\nFound {len(results)} result(s):\n")
             print(f"{header[0]:<15} {header[1]:<15} {header[2]:<8} {header[3]:<8}")
             print("-" * 50)
             for row in results:
                 print(f"{row[0]:<15} {row[1]:<15} {row[2]:<8} {row[3]:<8}")
-        else:
-            print("\n No matches found.")
-        
+
         input("\nPress Enter to go back...")
-    
+
     except FileNotFoundError:
-        print("\n File not found.\n")        
+        print("\nFile not found.\n")      
 
-#SORTING
-def sort_entries(data):
-
-    clear_console()
-    print("\nHow would you like to sort the results?")
-    print("1. Name (A-Z)")
-    print("2. Last Name (A-Z)")
-    print("3. Phase (ascending)")
-    print("4. Grade (ascending)")
-    print("5. No Sorting")
-
-    option = input("Choose an option (1-5): ").strip()
-
-    if option == "1":
-        data.sort(key=lambda x: x[0].lower())  # First Name
-    elif option == "2":
-        data.sort(key=lambda x: x[1].lower())  # Last Name
-    elif option == "3":
-        data.sort(key=lambda x: int(x[2]))     # Phase
-    elif option == "4":
-        data.sort(key=lambda x: int(x[3]))     # Grade
-    elif option == "5":
-        pass  # No sorting
-    else:
-        print("Invalid option. Showing unsorted data.")
-    return data
-
-#DELETE ENTRIES
 def delete_entry():
     try:
         with open("data/data.csv", "r") as file:
@@ -114,27 +237,22 @@ def delete_entry():
         print("4. Show All")
 
         option = input("Choose an option (1-4): ").strip()
+        filtered = []
 
         if option in {"1", "2", "3"}:
             query = input("Enter your search term: ").strip().lower()
-
-            if option == "1":
-                filtered = [row for row in data if query in row[0].lower()]
-            elif option == "2":
-                filtered = [row for row in data if query in row[1].lower()]
-            elif option == "3":
-                filtered = [row for row in data if row[2] == query]
+            filtered = filter_data(data, option, query)
         elif option == "4":
             filtered = data
         else:
-            print("Invalid option.")
-            return
+            print("Invalid option.") 
+            return 
 
         if not filtered:
             print("\nNo matching entries found.")
             return
 
-        filtered = sort_entries(filtered) 
+        filtered = sort_entries(filtered)
 
         clear_console()
         print("\n=== MATCHING ENTRIES ===\n")
@@ -167,11 +285,11 @@ def delete_entry():
             return
 
         # Remove from full dataset
-        data.remove(to_delete)
-
         # Rewrite CSV
         with open("data/data.csv", "w", newline="") as file:
             writer = csv.writer(file)
+            writer.writerow(header)  # Keep this for now, as header is already known
+            writer.writerows(data)
             writer.writerow(header)
             writer.writerows(data)
 
@@ -188,42 +306,6 @@ def delete_entry():
 
     except FileNotFoundError:
         print("\nCSV file not found.\n")
-
-#VIEW ALL ENTRIES IN THE DATA SET
-def view_all_entries():
-    if not os.path.exists("data/data.csv"):
-        print("\n No data found. Add some... \n")
-        return
-
-    with open("data/data.csv", "r") as file:
-        rows = list(csv.reader(file))
-
-    if len(rows) <= 1:
-        print("\n The file is empty or has only headers. \n")
-        return
-
-    headers = rows[0]
-    original_data = rows[1:]
-    data = original_data.copy()
-
-    while True:
-        os.system("cls" if os.name == "nt" else "clear")
-
-        clear_console()
-        print("\n STUDENT ENTRIES: \n")
-        print(f"{headers[0]:<15} {headers[1]:<15} {headers[2]:<8} {headers[3]:<8}")
-        print("-" * 50)
-        for row in data:
-            print(f"{row[0]:<15} {row[1]:<15} {row[2]:<8} {row[3]:<8}")
-        print()
-
-        choice = input("Press 'x' to sort, or 'b' to go back to the main menu: ").strip().lower()
-        if choice == "b":
-            break
-        elif choice == "x":
-            data = sort_entries(data)
-        else:
-            print("Invalid option.")
 
 #MENU AND ITS PARTS
 def show_menu():
@@ -242,124 +324,34 @@ def show_menu():
 def show_credits():
     print(r"""
           "Made by Not_Sharpnooze, using Python.
-                    snakes are stupid"
+                wish me lunch... "
           """)
-
-#DATA TO INPUT
-def data_entry():
-
-    clear_console()
-    file = open("data/data.csv", "a", newline="") 
-
-    name = input("Enter student name: ").strip()
-    last_name = input("Enter student last name: ").strip()
-
-    #Phases options
-    valid_phases = {"5", "6", "7"}
-    while True:
-        phase = input("Enter student's phase (5, 6, 7): ").strip()
-        if phase in valid_phases:
-            break
-        print("Enter: 5, 6 ot 7.")
-
-    #Per Phase
-    valid_phases_grades = {
-        "5": {"7","8"},
-        "6": {"9","10"},
-        "7": {"11","12"}
-    }
-    valid_grades = valid_phases_grades[phase]
-    print(f"Add a grade: {", ".join(valid_grades)}")
-
-    while True:
-        grade = input("Enter student's grade: ").strip()
-        if grade in valid_grades:
-            break
-        print(f"Pick a grade: {", ".join(valid_grades)}")
-        break
-
-    parent_name = input("Parent's name: ")
-    parent_number = input("Parent's number: ")
-    parent_mail = input("Parent's mail: ")
-    
-
-    #Writes on CSV file
-    with open("data/data.csv", "a", newline="") as file:
-        writer = csv.writer(file)
-        #write header only if file is empty
-        if file.tell() == 0:
-            writer.writerow(["Name", "Last Name", "Phase", "Grade"])
-        writer.writerow([name, last_name, phase, grade, parent_name, parent_number, parent_mail])
-    print(f"Entry for {name} {last_name} saved.")
-
-    #Creates a BIO
-    os.makedirs("entries", exist_ok=True)
-    filename = f"{name}_{last_name}_{phase}_{grade}_entry.txt"
-    filepath = os.path.join("entries", filename)
-
-        #SETS THE TXT TEMPLATE
-    with open(filepath, "w") as f:
-        f.write("=== STUDENT INFORMATION ===\n")
-        f.write(f"First Name: {name}\n")
-        f.write(f"Last Name:  {last_name}\n")
-        f.write(f"Parent's Name:  {parent_name}\n")
-        f.write(f"Parent's Number:  {parent_number}\n")
-        f.write(f"Parent's Mail:  {parent_mail}\n")
-
-        f.write("=== ACADEMIC DATA ===\n")
-        f.write(f"Phase:      {phase}\n")
-        f.write(f"Grade:      {grade}\n")
-
-        f.write("=== NOTES ===\n")
-        f.write("None\n")  # You could later ask the user to add a note here
-
-        f.write("=== PROGRESS ===\n")
-        f.write("None\n")  # You could later ask the user to add a note here
-
-        f.write("=== COMMENTS ===\n")
-        f.write("None\n")  # You could later ask the user to add a note here
-
-    print(f"\n Entry saved and file created at: entries/{filename}\n")
-
-#END OF THE ENTRY LOOP
-def end_of_data_entry():
-    while True:
-        data_entry()
-        while True:
-            response = input("Do you have more entries? (y/n): ").strip().lower()
-            if response in {"y","n"}:
-                break
-            print("Answer with (y) or (n), (y) means yes, (n) means no")
-        
-        if response == "n":
-            print("Returning to main menu...")
-            break 
 
 # === MAIN MENU SETTINGS ===
 def main():
-    clear_console()
     show_banner()
+    try:
+        while True:
+            show_menu()
+            choice = input("Select an option: ").strip().lower()
 
-    while True:
-        show_menu()
-        choice =  input("Select an option: ").strip().lower()
+            if choice == "1":
+                end_of_data_entry()
+            elif choice == "2":
+                view_all_entries()
+            elif choice == "3":
+                search_entries()
+            elif choice == "4":
+                delete_entry()
+            elif choice == "5":
+                show_credits()
+            elif choice == "q":
+                print("Hasta la vista...")
+                subprocess.run(["python", "tetraforce.py"])
+                break
+            else:
+                print("Choose wisely")
+    except KeyboardInterrupt:
+        print("\nExiting program. Goodbye!")
 
-        if choice == "1":
-            end_of_data_entry()
-        elif choice == "2":
-            view_all_entries()
-        elif choice == "3":
-            search_entries()
-        elif choice == "4":
-            delete_entry()
-        elif choice == "5":
-            show_credits()   
-        elif choice == "q":
-            print("Hasta la vista...")
-            import subprocess
-            subprocess.run(["python", "tetraforce.py"])
-            break
-
-        else:
-            print("Choose wisely")
 main()

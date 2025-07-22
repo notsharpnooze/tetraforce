@@ -1,0 +1,15 @@
+=== STUDENT INFORMATION ===
+First Name: Naruto
+Last Name:  Uzumaki
+Parent's Name:  Hokage
+Parent's Number:  789456123
+Parent's Mail:  leaf@ninja.com
+=== ACADEMIC DATA ===
+Phase:      7
+Grade:      12
+=== NOTES ===
+None
+=== PROGRESS ===
+None
+=== COMMENTS ===
+None
