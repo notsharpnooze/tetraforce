@@ -19,8 +19,6 @@ def show_banner():
 """)
 
 
-    
-
 def data_entry():
    
     def write_csv_header_if_needed(writer, file_exists):
