@@ -17,6 +17,8 @@ def show_menu():
     print(r""" 
         """)
     print("1. Registry")
+    print("2. Manage Classes")
+    print("3. Tools")
     print("Press Q to quit")
 
 def main():    
@@ -30,10 +32,10 @@ def main():
                 if choice == "1":
                         pass
                 if choice == "q":
-                        import subprocess
-                        subprocess.run(["python", "tetraforce.py"])
-                        break
+                        return
 
-        else:
-                print("Choose wisely")
-main()    
+                else:
+                    print("Choose wisely")
+
+if __name__ == "__main__":
+    main()

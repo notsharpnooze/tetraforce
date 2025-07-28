@@ -1,5 +1,6 @@
 
 import os
+import sys
 
 def clear_console():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -61,7 +62,8 @@ def main():
             subprocess.run(["python", "modules/meister.py"])
 
         if choice == "q":
-            break
+            sys.exit()
         else:
             print("Choose one of the avaible options")
-main()
+if __name__ == "__main__":
+    main()

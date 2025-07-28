@@ -37,10 +37,9 @@ def main():
                 if choice == "1":
                         pass
                 if choice == "q":
-                        import subprocess
-                        subprocess.run(["python", "tetraforce.py"])
-                        break
+                        return
 
         else:
                 print("Choose wisely")
-main()
+if __name__ == "__main__":
+    main()

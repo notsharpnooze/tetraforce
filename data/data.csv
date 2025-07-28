@@ -1,7 +1,2 @@
-name, last_name, phase, grade, parent_name, parent_number, parent_mail
-Ogrys,Taveras,7,11,Ogrys_Dad,123456789,Dad@fake.com
-Naruto,Uzumaki,7,12,Hokage,789456123,leaf@ninja.com
-Niko,Bellic,5,7,Mom's,951753456,Aztriozka@papers.com
-Turtle,Magic,6,9,Roshi,741852963,island@tour.com
-Luna,Maria,5,7,Noname,789963741,woof@doggy.com
-Luna,Maria,5,7,woof,789456123,woof@doggy.com
+Name,Last Name,Phase,Grade,Parent Name,Parent Number,Parent Mail
+Ogrys,Taveras,7,12,Alberto Taveras,809-111-2222,Fake@mail.com
