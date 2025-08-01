@@ -138,7 +138,7 @@ def read_bio():
                 index = int(selection) - 1
                 if 0 <= index < len(current_data):
                     entry = current_data[index]
-                    name, last_name, phase, grade = entry[:4]
+                    name, last_name, phase, grade = [x.strip() for x in entry[:4]]
                     filename = f"{name}_{last_name}_{phase}_{grade}_entry.txt"
                     filepath = os.path.join("entries", filename)
 
@@ -166,9 +166,10 @@ def show_menu():
     print("Q. Quit")
 
 def main():
-    clear_console()
-    show_banner()
+
     while True:
+        clear_console()
+        show_banner()
         show_menu()
         choice = input("Select an option: ").strip().lower()
         if choice == "1":
