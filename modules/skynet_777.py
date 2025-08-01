@@ -84,10 +84,29 @@ def data_entry():
         f.write("\n=== ACADEMIC DATA ===\n")
         f.write(f"Phase:      {phase}\n")
         f.write(f"Grade:      {grade}\n")
-        f.write("\n=== NOTES ===\nNone\n")
-        f.write("\n=== PROGRESS ===\nNone\n")
-        f.write("\n=== COMMENTS ===\nNone\n")
 
+# Creates notes, progress and comments files
+    os.makedirs("entries/notes", exist_ok=True)
+    filename_notes = f"{name}_{last_name}_{phase}_{grade}_notes.txt"
+    filepath_notes = os.path.join("entries/notes", filename_notes)
+    
+    with open(filepath_notes, "w") as f:
+        f.write("\n=== NOTES ===\nNone\n")
+    
+    os.makedirs("entries/progress", exist_ok=True)
+    filename_progress = f"{name}_{last_name}_{phase}_{grade}_progress.txt"
+    filepath_progress = os.path.join("entries/progress", filename_progress)
+
+    with open(filepath_progress, "w") as f:
+        f.write("\n=== PROGRESS ===\nNone\n")
+
+    os.makedirs("entries/comments", exist_ok=True)
+    filename_comments = f"{name}_{last_name}_{phase}_{grade}_comments.txt"
+    filepath_comments = os.path.join("entries/comments", filename_comments)
+
+    with open(filepath_comments, "w") as f:
+        f.write("\n=== COMMENTS ===\nNone\n")
+#ENDS
     clear_console()
     print(f"\nEntry saved and file created at: entries/{filename}\n")
     input("Press Enter to continue...")
@@ -274,6 +293,7 @@ def view_all_entries():
 def show_menu():
     clear_console()
     show_banner()
+
     print("\nMAIN MENU")
     print("1. Data Entry")
     print("2. View All Entries")
@@ -290,7 +310,6 @@ def show_credits():
 
 # === MAIN MENU SETTINGS ===
 def main():
-    show_banner()
     try:
         while True:
             show_menu()

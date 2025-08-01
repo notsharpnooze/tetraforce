@@ -1,0 +1,10 @@
+=== STUDENT INFORMATION ===
+First Name: Ogrys
+Last Name:  Taveras
+Parent's Name:  Alberto Taveras
+Parent's Number:  809-123-3211
+Parent's Mail:  Alberto@fake.com
+
+=== ACADEMIC DATA ===
+Phase:      7
+Grade:      11
