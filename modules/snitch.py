@@ -1,6 +1,5 @@
 import os
 import csv
-import subprocess
 
 def clear_console():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -15,7 +14,6 @@ def show_banner():
           (_) |_           
         saw nothing      
       """)
-
 
 def search_entries(data, header):
     clear_console()

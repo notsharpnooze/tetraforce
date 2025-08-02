@@ -65,5 +65,6 @@ def main():
             sys.exit()
         else:
             print("Choose one of the avaible options")
+
 if __name__ == "__main__":
     main()
