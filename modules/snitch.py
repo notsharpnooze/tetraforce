@@ -1,6 +1,5 @@
 import os
 import csv
-import subprocess
 
 def clear_console():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -15,7 +14,6 @@ def show_banner():
           (_) |_           
         saw nothing      
       """)
-
 
 def search_entries(data, header):
     clear_console()
@@ -138,21 +136,24 @@ def read_bio():
                 index = int(selection) - 1
                 if 0 <= index < len(current_data):
                     entry = current_data[index]
-                    name, last_name, phase, grade = entry[:4]
-                    filename = f"{name}_{last_name}_{phase}_{grade}_entry.txt"
-                    filepath = os.path.join("entries", filename)
+                    name, last_name, phase, grade = [x.strip() for x in entry[:4]]
+                    base_filename = f"{name}_{last_name}_{phase}_{grade}"
+                    file_types = [
+                        ("Entry", os.path.join("entries",f"{base_filename}_entry.txt")),
+                        ("Comments", os.path.join("entries","comments",f"{base_filename}_comments.txt")),
+                        ("Notes", os.path.join("entries","notes",f"{base_filename}_notes.txt")),
+                        ("Progress", os.path.join("entries","progress",f"{base_filename}_progress.txt")),
+                    ]
 
-                    if os.path.exists(filepath):
-                        clear_console()
-                        print(f"\nReading: {filename}\n")
-                        print("=" * 50)
-                        with open(filepath, "r") as f:
-                            print(f.read())
-                        print("=" * 50)
-                        input("\nPress Enter to return...")
-                    else:
-                        print(f"\nBio file not found: {filename}")
-                        input("Press Enter to continue...")
+                    clear_console()
+                    for label, filepath in file_types:
+                        if os.path.exists(filepath):
+                            with open(filepath, "r") as f:
+                                print(f.read())
+                        else:
+                            print(f"\n{label} file not found: {os.path.basename(filepath)}")
+                    input("\nPress Enter to return...")
+
                 else:
                     print("Invalid selection.")
                     input("Press Enter to continue...")
@@ -166,9 +167,10 @@ def show_menu():
     print("Q. Quit")
 
 def main():
-    clear_console()
-    show_banner()
+
     while True:
+        clear_console()
+        show_banner()
         show_menu()
         choice = input("Select an option: ").strip().lower()
         if choice == "1":

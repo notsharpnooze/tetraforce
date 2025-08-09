@@ -12,18 +12,11 @@ def show_banner():
      ---\\\\execute order 66////---
           """)
 
-#MAIN FUNCTIONS
-
-
-
-
 def show_menu():
     print("Select an option: ")
     print(r""" 
         """)
     print("1. Registry")
-    print("2. Manage Classes")
-    print("3. Tools")
     print("Press Q to quit")
 
 def main():    
@@ -37,10 +30,10 @@ def main():
                 if choice == "1":
                         pass
                 if choice == "q":
-                        return
+                        import subprocess
+                        subprocess.run(["python", "tetraforce.py"])
+                        break
 
-                else:
-                    print("Choose wisely")
-
-if __name__ == "__main__":
-    main()
+        else:
+            print("Choose wisely")
+main()    
