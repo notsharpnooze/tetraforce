@@ -12,6 +12,11 @@ def show_banner():
      ---\\\\execute order 66////---
           """)
 
+#MAIN FUNCTIONS
+
+
+
+
 def show_menu():
     print("Select an option: ")
     print(r""" 
