@@ -1,6 +1,7 @@
 import csv
 import os
 import subprocess
+
 #Keep it clean
 def clear_console():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -190,6 +191,7 @@ def filter_data(data, option, query):
 def view_all_entries():
     if not os.path.exists("data/data.csv"):
         print("\n No data found. Add some... \n")
+        input("Press Enter to continue...")
         return
     
     with open("data/data.csv", "r") as file:
@@ -197,6 +199,7 @@ def view_all_entries():
 
     if len(rows) <= 1:
         print("\n The file is empty or has only headers. \n")
+        input("Press Enter to continue...")
         return
     
     header = rows[0]
@@ -216,7 +219,7 @@ def view_all_entries():
                 "Press 'f' to search, \n"
                 "Press 'x' to sort, \n"
                 "Press 'd' to delete an entry, \n"
-                "or 'b' to go back to the main menu: "
+                "\nor 'b' to go back to the main menu: "
             ).strip().lower()
 
             if choice == "b": 
@@ -288,6 +291,7 @@ def view_all_entries():
             
             else:
                 print("Invalid option.")
+                input("Press Enter to continue...")
 
 #MENU AND ITS PARTS
 def show_menu():
@@ -312,6 +316,7 @@ def show_credits():
 def main():
     try:
         while True:
+            show_banner()
             show_menu()
             choice = input("Select an option: ").strip().lower()
 
